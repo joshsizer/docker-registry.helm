@@ -23,7 +23,7 @@ jobs:
 
       - name: Configure folder structure
         run: |
-          mdkir charts/docker-registry
+          mkdir charts/docker-registry
           cp -r ./**/* charts/docker-registry
 
       - name: Run chart-releaser
