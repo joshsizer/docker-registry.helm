@@ -24,10 +24,8 @@ jobs:
       - name: Configure folder structure
         shell: bash
         run: |
-          echo $PWD
-          echo $BASH_VERSION
           mkdir -p charts/docker-registry
-          ls -laR
+          shopt -s extglob
           cp -r !(charts) charts/docker-registry/
 
       - name: Run chart-releaser
