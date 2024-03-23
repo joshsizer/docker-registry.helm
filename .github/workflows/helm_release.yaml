@@ -24,7 +24,7 @@ jobs:
       - name: Configure folder structure
         run: |
           mkdir -p charts/docker-registry
-          cp -r ./**/* charts/docker-registry/
+          cp -r !(charts) charts/docker-registry/
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
