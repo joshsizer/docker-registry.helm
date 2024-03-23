@@ -25,6 +25,7 @@ jobs:
         shell: bash
         run: |
           echo $PWD
+          echo $BASH_VERSION
           mkdir -p charts/docker-registry
           ls -laR
           cp -r !(charts) charts/docker-registry/
