@@ -34,4 +34,4 @@ jobs:
           repo=$(cut -d '/' -f 2 <<< "$GITHUB_REPOSITORY")
           cr package
           cr upload --owner="$owner" --git-repo "$repo" --token="$CR_TOKEN" --release-name-template="v{{ .Version }}" --packages-with-index --push --skip-existing
-          cr index --owner="$owner" --git-repo "$repo" --token="$CR_TOKEN --release-name-template="v{{ .Version }}" --packages-with-index --push --index-path="."
+          cr index --owner="$owner" --git-repo "$repo" --token="$CR_TOKEN" --release-name-template="v{{ .Version }}" --packages-with-index --push --index-path="."
