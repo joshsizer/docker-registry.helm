@@ -20,10 +20,29 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      
+      - name: Set Environment
+        run: |
+          echo "owner=$(cut -d '/' -f 1 <<< "$GITHUB_REPOSITORY")" >> "$GITHUB_ENV"
+          echo "repo=$(cut -d '/' -f 2 <<< "$GITHUB_REPOSITORY")" >> $GITHUB_ENV
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+      - name: Run chart-releaser package
+        uses: docker://quay.io/helmpack/chart-releaser:v1.6.1
         with:
-          charts_dir: .
+          args: package
+        env:
+          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+      
+      - name: Run chart-releaser upload
+        uses: docker://quay.io/helmpack/chart-releaser:v1.6.1
+        with:
+          args: upload --owner="$owner" --git-repo "$repo" --token="$CR_TOKEN" --release-name-template="v{{ .Version }}" --packages-with-index --push --skip-existing
+        env:
+          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+
+      - name: Run chart-releaser index
+        uses: docker://quay.io/helmpack/chart-releaser:v1.6.1
+        with:
+          args: index --owner="$owner" --git-repo "$repo" --token="$CR_TOKEN" --release-name-template="v{{ .Version }}" --index-path="." --packages-with-index --push 
         env:
           CR_TOKEN: "${{ secrets.CR_TOKEN }}"
