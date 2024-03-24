@@ -21,28 +21,17 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
       
-      - name: Set Environment
+      - name: Install chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          install_only: true
+
+      - name: Run chart-releaser
+        env:
+          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
         run: |
-          echo "owner=$(cut -d '/' -f 1 <<< "$GITHUB_REPOSITORY")" >> "$GITHUB_ENV"
-          echo "repo=$(cut -d '/' -f 2 <<< "$GITHUB_REPOSITORY")" >> $GITHUB_ENV
-
-      - name: Run chart-releaser package
-        uses: docker://quay.io/helmpack/chart-releaser:v1.6.1
-        with:
-          args: package
-        env:
-          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
-      
-      - name: Run chart-releaser upload
-        uses: docker://quay.io/helmpack/chart-releaser:v1.6.1
-        with:
-          args: upload --owner="${{ env.owner }}" --git-repo "${{ env.repo}}" --token="${{ env.CR_TOKEN }}" --release-name-template="v{{ .Version }}" --packages-with-index --push --skip-existing
-        env:
-          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
-
-      - name: Run chart-releaser index
-        uses: docker://quay.io/helmpack/chart-releaser:v1.6.1
-        with:
-          args: index upload --owner="${{ env.owner }}" --git-repo "${{ env.repo}}" --token="${{ env.CR_TOKEN }}" --release-name-template="v{{ .Version }}" --index-path="." --packages-with-index --push 
-        env:
-          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+          owner=$(cut -d '/' -f 1 <<< "$GITHUB_REPOSITORY")
+          repo=$(cut -d '/' -f 2 <<< "$GITHUB_REPOSITORY")
+          cr package
+          cr upload --owner="$owner" --git-repo "$repo" --token="$CR_TOKEN" --release-name-template="v{{ .Version }}" --packages-with-index --push --skip-existing
+          cr index --owner="$owner" --git-repo "$repo" --token="$CR_TOKEN --release-name-template="v{{ .Version }}" --packages-with-index --push --index-path="."
