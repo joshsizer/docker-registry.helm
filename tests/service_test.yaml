@@ -1,0 +1,22 @@
+suite: Service Template Tests
+templates:
+  - templates/service.yaml
+tests:
+  - it: should create a ClusterIP service with default port
+    set:
+      service:
+        type: ClusterIP
+        port: 5000
+    asserts:
+      - equal:
+          path: spec.type
+          value: "ClusterIP"
+      - equal:
+          path: spec.ports[0].port
+          value: 5000
+      - equal:
+          path: spec.ports[0].name
+          value: "http-5000"
+      - equal:
+          path: spec.selector.app
+          value: "docker-registry"

@@ -1,0 +1,24 @@
+suite: Autoscaling Template Tests
+templates:
+  - templates/hpa.yaml
+capabilities:
+  apiVersions:
+    - "autoscaling/v2"
+tests:
+  - it: should create an HPA when autoscaling is enabled
+    set:
+      autoscaling:
+        enabled: true
+        minReplicas: 2
+        maxReplicas: 5
+        targetCPUUtilizationPercentage: 70
+    asserts:
+      - equal:
+          path: spec.minReplicas
+          value: 2
+      - equal:
+          path: spec.maxReplicas
+          value: 5
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 70
