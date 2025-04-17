@@ -1,0 +1,15 @@
+suite: Ingress Template Tests
+templates:
+  - templates/ingress.yaml
+tests:
+  - it: should create an ingress when enabled with default host and path
+    set:
+      ingress:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.rules[0].host
+          value: "chart-example.local"
+      - equal:
+          path: spec.rules[0].http.paths[0].path
+          value: "/"
