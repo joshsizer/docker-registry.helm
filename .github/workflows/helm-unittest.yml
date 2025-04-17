@@ -28,4 +28,4 @@ jobs:
 
       - name: Run Helm Unittests
         run: |
-          helm unittest . -f tests/*_test.yaml
+          helm unittest .
